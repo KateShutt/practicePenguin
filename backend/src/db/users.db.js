@@ -19,3 +19,16 @@ export async function findUserByEmail(email) {
     throw error;
   }
 }
+
+export async function createUser(username, email, passwordHash) {
+  try {
+    await pool.query(
+      "INSERT INTO users(username,email,password_hash,role) VALUES (?,?,?,?)",
+      [username, email, passwordHash, "student"],
+    );
+
+    return { username, email, role: "student" };
+  } catch (error) {
+    throw error;
+  }
+}
