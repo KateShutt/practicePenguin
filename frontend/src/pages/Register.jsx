@@ -4,6 +4,9 @@ import { isValidEmail } from "../../../shared/validation/email";
 import { isValidPassword } from "../../../shared/validation/password";
 import { isValidUsername } from "../../../shared/validation/username";
 
+import RedirectModal from "../components/RedirectModal";
+import { useNavigate } from "react-router-dom";
+
 function Register() {
   const [formData, setFormData] = useState({
     email: "",
@@ -12,12 +15,21 @@ function Register() {
     confirmPassword: "",
   });
 
+  const navigate = useNavigate();
+
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   function togglePassword() {
     setPasswordVisible(!passwordVisible);
+  }
+
+  function navToLogin() {
+    setModalOpen(false);
+    navigate("/login");
   }
 
   function handleChange(e) {
@@ -59,6 +71,7 @@ function Register() {
 
       console.log(response.data);
       setErrorMessage("");
+      setModalOpen(true);
     } catch (error) {
       console.log(error);
       console.log(error.response);
@@ -110,7 +123,7 @@ function Register() {
           Confirm Password:
           <input
             name="confirmPassword"
-            type="text"
+            type={passwordVisible ? "text" : "password"}
             value={formData.confirmPassword}
             onChange={handleChange}
             required
@@ -119,6 +132,13 @@ function Register() {
         <button type="submit">Register</button>
       </form>
       {errorMessage && <p>{errorMessage}</p>}
+      <RedirectModal
+        isOpen={modalOpen}
+        title="Success!"
+        message="Account created!"
+        buttonText="Go to Login"
+        onButtonClick={navToLogin}
+      />
     </>
   );
 }
