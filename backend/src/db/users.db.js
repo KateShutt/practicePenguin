@@ -6,9 +6,11 @@ import pool from "./connection.js";
 export async function findUserByEmail(email) {
   try {
     const [rows] = await pool.query(
-      "SELECT user_id FROM users WHERE email = ?",
+      "SELECT user_id, email, username, password_hash,role FROM users WHERE email = ?",
       [email],
     );
+
+    console.log(rows[0]);
 
     if (rows.length === 0) {
       return null;

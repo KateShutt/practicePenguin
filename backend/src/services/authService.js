@@ -20,3 +20,20 @@ export async function registerUser(data) {
 
   return { username: user.username, email: user.email };
 }
+
+export async function loginUser(data) {
+  //findUserByEmail(data.email);
+  const user = await findUserByEmail(data.email);
+
+  if (user === null) {
+    throw new Error("email doesn't exist");
+  }
+
+  const passwordMatch = await bcrypt.compare(data.password, user.password_hash);
+
+  if (!passwordMatch) {
+    throw new Error("passwords do not match");
+  }
+
+  return { username: user.username, email: user.email };
+}
