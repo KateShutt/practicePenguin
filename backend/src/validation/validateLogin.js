@@ -13,28 +13,25 @@ export function validateLogin(req, res, next) {
   for (let key of Object.keys(formData)) {
     if (!allowedFields.has(key)) {
       console.log("unknown fields not allowed!");
-      return res.status(400).json({ error: "unknown fields not allowed!" });
+      return res.status(400).json({ message: "unknown fields not allowed!" });
     }
   }
 
   if (typeof email !== "string" || email.trim().length === 0) {
     console.log("email must be a non-empty string");
-    return res.status(400).json({ error: "email required" });
+    return res.status(400).json({ message: "email required" });
   }
 
   if (!isValidEmail(email)) {
     console.log("invalid email");
-    return res.status(400).json({ error: "invalid email" });
+    return res
+      .status(400)
+      .json({ message: "Please enter  valid email address" });
   }
 
   if (typeof password !== "string" || password.length === 0) {
     console.log("password must be a non-empty string");
-    return res.status(400).json({ error: "password required!" });
-  }
-
-  if (!isValidPassword(password)) {
-    console.log("invalid password");
-    return res.status(400).json({ error: "invalid password!" });
+    return res.status(400).json({ message: "password required!" });
   }
 
   req.validatedData = { email, password };

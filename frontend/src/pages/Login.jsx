@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { isValidEmail } from "../../../shared/validation/email";
+import RedirectModal from "../components/RedirectModal";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -12,8 +14,17 @@ function Login() {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+
   function togglePassword() {
     setPasswordVisible(!passwordVisible);
+  }
+
+  function goToDashboard() {
+    setModalOpen(false);
+    navigate("/dashboard");
   }
 
   function handleChange(e) {
@@ -45,8 +56,20 @@ function Login() {
         "http://localhost:5000/api/auth/login",
         formData,
       );
+      console.log(response.data);
+      setErrorMessage("");
+      setModalOpen(true);
     } catch (error) {
       console.log(error);
+      console.log(error.response);
+      console.log(error.response?.data);
+      console.log(error.response?.status);
+
+      //sometimes we might not get 400 / 500 error. This means there will be no error.response. Chaining prevents program from cracshing in this case.
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Unable to connect to server. Please try again",
+      );
     }
   }
 
@@ -75,11 +98,16 @@ function Login() {
         <button type="button" onClick={togglePassword}>
           {passwordVisible ? "Hide password" : "Show password"}
         </button>
-        <button type="submit" onClick={handleSubmit}>
-          Login
-        </button>
+        <button type="submit">Login</button>
       </form>
       {errorMessage && <p>{errorMessage}</p>}
+      <RedirectModal
+        isOpen={modalOpen}
+        title="Hurrah!"
+        message="You have successfully logged in!"
+        buttonText="Go to dashboard"
+        onButtonClick={goToDashboard}
+      />
     </>
   );
 }

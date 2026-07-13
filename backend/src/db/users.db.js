@@ -10,7 +10,7 @@ export async function findUserByEmail(email) {
       [email],
     );
 
-    console.log(rows[0]);
+    //console.log(rows[0]);
 
     if (rows.length === 0) {
       return null;
