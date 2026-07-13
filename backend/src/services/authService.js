@@ -26,13 +26,17 @@ export async function loginUser(data) {
   const user = await findUserByEmail(data.email);
 
   if (user === null) {
-    throw new Error("email doesn't exist");
+    const error = new Error("Invalid email or password");
+    error.code = "INVALID_CREDENTIALS";
+    throw error;
   }
 
   const passwordMatch = await bcrypt.compare(data.password, user.password_hash);
 
   if (!passwordMatch) {
-    throw new Error("passwords do not match");
+    const error = new Error("Invalid email or password");
+    error.code = "INVALID_CREDENTIALS";
+    throw error;
   }
 
   return { username: user.username, email: user.email };
